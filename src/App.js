@@ -69,7 +69,7 @@ const useStyles = makeStyles((theme) => ({
       borderColor: "white"
     },
     "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-      borderColor: "ehite"
+      borderColor: "white"
     }
   }
 }));
@@ -116,10 +116,12 @@ function App() {
     console.log("Started API call for Handle: ")
     console.log(handle_id);
     handle_id = handle_id.replace('@', '');
-    var url = "http://localhost:8000/api/v1/handle-analytics?handle="+handle_id.toString().toLowerCase();
+    // var url = "http://localhost:8000/api/v1/handle-analytics?handle="+handle_id.toString().toLowerCase();
+    var url = "http://35.245.119.65:8000/api/v1/handle-analytics?handle="+handle_id.toString().toLowerCase();
     // var url = "https://catfact.ninja/fact";
     axios.get(url)
     .then( response => {
+      console.log(response)
       changeData(response);
       
     })
