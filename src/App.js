@@ -618,7 +618,7 @@ function App() {
                         onChange = {UpdateNtrkSliderVal}
                         />
                     </div>
-                    <Button id = "generate_communities" size="small" variant="outlined">Louvain Clusters</Button>
+                    {/* <Button id = "generate_communities" size="small" variant="outlined">Louvain Clusters</Button> */}
                       
                      
                     </RadioGroup>
