@@ -211,6 +211,8 @@ function App() {
       });
     })
 
+    
+
 
     setData(data_twt);
   
@@ -362,6 +364,10 @@ function App() {
 
   }
     
+
+  function generateWordSimilarities (data, slider_val) {
+
+  }
     
   const changeGraphData = () => {
     console.log("changedata called")
