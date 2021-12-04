@@ -102,6 +102,43 @@ function Bubblechart({ width, height, words, clearflag}){
                 })
                 .text(d => d.word)
 
+
+
+            var g_legend_b = svg.append('g')
+              .attr("id", "legend-b")
+              .attr('transform', "translate("+ (width_plot-margin.right+80) +","+ (height_plot-margin.bottom-20)+ ")")
+    
+            g_legend_b.append("circle")
+              .attr("cx", -width_plot*0.4)
+              .attr("cy", -10)
+              .attr("r", "0.4em")
+              .attr("fill", "red");
+
+            g_legend_b.append("circle")
+              .attr("cx", -width_plot*0.8)
+              .attr("cy", -10)
+              .attr("r", "0.4em")
+              .attr("fill", "#7CFC00");
+    
+            g_legend_b.append("text")
+              .attr("x", -width_plot*0.4)
+              .attr("y", 25)
+              .style("fill", "white")
+              .text("Toxic")
+              .style("text-anchor", "middle")
+              .attr("alignment-baseline","middle")
+              .style("font-size", "40%");
+    
+            g_legend_b.append("text")
+            .attr("x", -width_plot*0.8)
+            .attr("y", 25)
+            .style("fill", "white")
+            .text("Not Toxic")
+            .style("text-anchor", "middle")
+            .attr("alignment-baseline","middle")
+            .style("font-size", "40%");
+
+
             updateCircles();
         
             function updateWordInfo(word) {
