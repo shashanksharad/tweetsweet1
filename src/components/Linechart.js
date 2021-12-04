@@ -58,6 +58,15 @@ function LineChart({ width, height, data, weight, trshld}){
             .attr("transform",
                 "translate(" + margin.left + "," + margin.top + ")");
 
+        g.append("text")
+            .attr("x", width_plot*0.88)
+            .attr("y", 10)
+            .style("fill", "white")
+            .text(weight.toString()+" Engagement")
+            .style("text-anchor", "middle")
+            .attr("alignment-baseline","middle")
+            .style("font-size", "30%");
+
         // gridlines in x axis function
         function make_x_gridlines() {		
             return d3.axisBottom(x)

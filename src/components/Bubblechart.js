@@ -127,7 +127,7 @@ function Bubblechart({ width, height, words, clearflag}){
               .text("Toxic")
               .style("text-anchor", "middle")
               .attr("alignment-baseline","middle")
-              .style("font-size", "40%");
+              .style("font-size", "30%");
     
             g_legend_b.append("text")
             .attr("x", -width_plot*0.8)
@@ -136,7 +136,7 @@ function Bubblechart({ width, height, words, clearflag}){
             .text("Not Toxic")
             .style("text-anchor", "middle")
             .attr("alignment-baseline","middle")
-            .style("font-size", "40%");
+            .style("font-size", "30%");
 
 
             updateCircles();

@@ -274,8 +274,8 @@ function App() {
         label: +d.ts_metrics.is_toxic,
         date: parseTime(d.created_at.substring(0, 18)),
         score: +d.ts_metrics.toxic_yes_prob,
-        ct_retweets: +d.public_metrics.retweet_count,
-        ct_likes: +d.public_metrics.like_count,
+        Retweets: +d.public_metrics.retweet_count,
+        Likes: +d.public_metrics.like_count,
         ct_comments: +d.public_metrics.reply_count,
       });
     })
@@ -666,8 +666,8 @@ function App() {
             </div>
             <div id = "top_mid">
               <h6 id = "plot_title_2">Toxicity Engagement by Likes & Retweets</h6>
-              <LineChart width={650} height={100} data={data} weight={"ct_likes"} trshld = {slider_val}/>
-              <LineChart width={650} height={100} data={data} weight={"ct_retweets"} trshld = {slider_val}/>
+              <LineChart width={650} height={100} data={data} weight={"Likes"} trshld = {slider_val}/>
+              <LineChart width={650} height={100} data={data} weight={"Retweets"} trshld = {slider_val}/>
             </div>
             <div id = "top_right">
               <h6 id = "plot_title_2">Toxicity Meter</h6>
@@ -732,7 +732,7 @@ function App() {
                     
                   </div>
                 </Box>
-                <Bubblechart  width={500} height={400} words={words} trshld={0.5} clearflag = {clearBubble}/>
+                <Bubblechart  width={600} height={400} words={words} trshld={0.5} clearflag = {clearBubble}/>
                 
               </div>
               <div id = "bot_right">
