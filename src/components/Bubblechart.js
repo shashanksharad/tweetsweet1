@@ -33,7 +33,7 @@ function Bubblechart({ width, height, words, clearflag}){
         var classes = words.map(function(word){ return +word.class;});
         var class_colorscale = d3.scaleOrdinal([  "#7CFC00", "red"]).domain([0, 1]);
         var circles, labels;
-        var circleSize = {min:width_plot*0.04, max:width_plot*0.08};
+        var circleSize = {min:width_plot*0.02, max:width_plot*0.06};
 
         var circleRadiusScale = d3.scaleSqrt()
             .domain(freq_extent)
