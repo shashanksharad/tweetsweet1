@@ -102,6 +102,7 @@ function App() {
   const [data,  setData] = useState([]);
   // const [graphdata, setGraphdata] = useState({nodes: [{id: "Word1"}, {id: "word2"}, {id: "word3"}, {id: "word4"}], links: [{source: "word1", target: "word2", simalirity: 1}, {source: "word1", target: "word3", simalirity: 1}]});
   const [graphdata, setGraphdata] = useState({nodes: [], links: []})
+  const [graphRes,  setGraphRes] = useState([]);
   const [words, setWords] = useState([]);
   
   const [loading, setLoading] = useState(true);
@@ -116,14 +117,21 @@ function App() {
     console.log("Started API call for Handle: ")
     console.log(handle_id);
     handle_id = handle_id.replace('@', '');
+
+    // For locally hosted API
     // var url = "http://localhost:8000/api/v1/handle-analytics?handle="+handle_id.toString().toLowerCase();
+
+    // For Accessing API withour Redirects
     // var url = "http://35.245.119.65:8000/api/v1/handle-analytics?handle="+handle_id.toString().toLowerCase();
+
+    // For Redirected API access on Netifly
     var url = "/api/api/v1/handle-analytics?handle="+handle_id.toString().toLowerCase();
     // var url = "https://catfact.ninja/fact";
     axios.get(url)
     .then( response => {
       console.log(response)
       changeData(response);
+      // changeGraphData(response);
       
     })
     .catch(err => {
@@ -197,6 +205,8 @@ function App() {
   }
 
   var parseTime = d3.timeParse("%Y-%m-%dT%H:%M:%S");
+
+
   const changeData = (res) => {
     var data_twt = [];
     res.data.data.forEach((d) => {
@@ -212,10 +222,8 @@ function App() {
       });
     })
 
-    
-
-
     setData(data_twt);
+    setGraphRes(res.data.word_similarities);
   
     // setWords(words);
     // setGraphdata(graphdata);
@@ -223,18 +231,18 @@ function App() {
     setLoading(false);
     handleClose();
 
-    var fs = require('fs');
-    var tweet_text = []
-    var tweet_scores = []
-    data_twt.forEach((d) => {
-      tweet_text.push(d.text);
-      tweet_scores.push(d.score)
-    }); // Generate this
-    var fileName = 'raw_tweets.txt'; 
-    console.log("!@#$%^")
-    console.log(tweet_text);
-    console.log(tweet_scores);
-    fs.writeFileSync(fileName, tweet_text.join('\n'));
+    // var fs = require('fs');
+    // var tweet_text = []
+    // var tweet_scores = []
+    // data_twt.forEach((d) => {
+    //   tweet_text.push(d.text);
+    //   tweet_scores.push(d.score)
+    // }); // Generate this
+    // var fileName = 'raw_tweets.txt'; 
+    // console.log("!@#$%^")
+    // console.log(tweet_text);
+    // console.log(tweet_scores);
+    // fs.writeFileSync(fileName, tweet_text.join('\n'));
     
     return () => undefined;
   }
@@ -251,8 +259,6 @@ function App() {
   const UpdateNtrkSliderVal=(e, new_val)=> {
     setNtrkSliderVal(new_val)
   }
-
- 
 
   const changeWords = () => {
     
@@ -366,33 +372,67 @@ function App() {
   }
     
 
-  function generateWordSimilarities (data, slider_val) {
+  function generateGraphNodes (data) {
+    
+    // check if an element exists in array using a comparer function
+    // comparer : function(currentElement)
+    Array.prototype.inArray = function(comparer) { 
+      for(var i=0; i < this.length; i++) { 
+          if(comparer(this[i])) return true; 
+      }
+      return false; 
+    }; 
+  
+  // adds an element to the array if it does not already exist using a comparer 
+  // function
+    Array.prototype.pushIfNotExist = function(element, comparer) { 
+        if (!this.inArray(comparer)) {
+            this.push(element);
+        }
+    }; 
+  
+    var array = [{ name: "tom", text: "tasty" }];
+    var element = { name: "tom", text: "tasty" };
 
-  }
-    
-  const changeGraphData = () => {
-    console.log("changedata called")
-    
+
+    // array.pushIfNotExist(element, function(e) { 
+    //     return e.source === element.source && e. === element.text; 
+    // });
+
     var nodesdata = [];
-    var linksdata = [];
-    d3.csv("/all_words.csv").then((d) => {
-      d.forEach(function(r) {
-        nodesdata.push({
-          id: r.word
-        })
-      });  
-    });
 
-    d3.csv("/words_network.csv").then((k) => {
-      k.forEach(function(j) {
+    data.forEach(function(r) {
+      var node_s = {id: r.source};
+      var node_t = {id: r.target};
+      nodesdata.pushIfNotExist(node_s, function (e) {
+        return e.id === node_s.id;
+      });
+      nodesdata.pushIfNotExist(node_t, function (e) {
+        return e.id === node_t.id;
+      });
+    });  
+
+    return nodesdata;
+  
+     
+  }
+
+  function generateGraphLinks (data) {
+    var linksdata = [];
+    data.forEach(function(j) {
         linksdata.push({
-          source: j.source, 
-          target: j.target,
-          weight: (+j.similarity),
-        });
-        
-      });  
+        source: j.source, 
+        target: j.target,
+        weight: (+j.similarity),
     });
+  });
+  return linksdata;
+}
+  const changeGraphData = () => {
+    
+    var linksdata = generateGraphLinks(graphRes);
+    var nodesdata = generateGraphNodes(graphRes);
+ 
 
     var graph_data;
     graph_data = {nodes: nodesdata, links: linksdata}
@@ -403,9 +443,6 @@ function App() {
     return () => undefined;
   }
 
-  // changeGraphData();
-
- 
 
   return (
     <div className="App">
@@ -442,6 +479,7 @@ function App() {
         <div id = "an_left" style={{color:"white"}}>
         <Autocomplete
               freeSolo
+              classes = {classes}
               id="free-solo-2-demo"
               disableClearable
               value={handle}
@@ -456,7 +494,8 @@ function App() {
               renderInput={(params) => (
                 <TextField
                   {...params}
-                  label="Search input"
+                  style={{ height: 10 }}
+                  label=""
                   InputProps={{
                     ...params.InputProps,
                     type: "search"
@@ -464,6 +503,12 @@ function App() {
                 />
               )}
             />
+
+
+
+
+
+
             {/* <Autocomplete
             id="combo-box-handles"
             classes = {classes}
