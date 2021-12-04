@@ -732,7 +732,7 @@ function App() {
                     
                   </div>
                 </Box>
-                <Bubblechart  width={600} height={400} words={words} trshld={0.5} clearflag = {clearBubble}/>
+                <Bubblechart  width={650} height={400} words={words} trshld={0.5} clearflag = {clearBubble}/>
                 
               </div>
               <div id = "bot_right">
