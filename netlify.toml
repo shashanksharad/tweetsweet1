@@ -1,3 +1,0 @@
-[[redirects]]
-  from = "/*"
-  to = "http://35.245.119.65:8000/api/:splat"
