@@ -196,7 +196,7 @@ function LineChart({ width, height, data, weight, trshld}){
 
             if (d) {
                 var sc = +d[weight];
-                info = "#"+weight.toString().substr(3)+": "+intToString(sc);
+                info = "#"+weight.toString()+": "+intToString(sc);
                 text_col = eng_levels_colors(tx_eng_lvl(+d[weight]));
             }
             d3.select("#engscorediv").html(info);
