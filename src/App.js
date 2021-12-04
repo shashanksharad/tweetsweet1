@@ -36,6 +36,8 @@ import NetworkGraphChart2 from './components/network_graph2';
 import WordNetwork from './components/word_network';
 import WordNetwork2 from './components/word_network2';
 // import WordNetwork3 from './components/word_network3';
+import Modal from '@mui/material/Modal';
+import { Alert } from '@mui/material';
 
 import axios from 'axios';
 // const {google} = require('googleapis');
@@ -99,19 +101,40 @@ function App() {
   const [handle, setHandle] = useState(topHandles[0])
   const [inputhandle, setInputHandle] = useState('')
 
+  const[error_text, setErrorText] = useState('')
+
+  // const [alert, setAlert] = useState(false);
+  // const [alertContent, setAlertContent] = useState('');
+
   const [data,  setData] = useState([]);
   // const [graphdata, setGraphdata] = useState({nodes: [{id: "Word1"}, {id: "word2"}, {id: "word3"}, {id: "word4"}], links: [{source: "word1", target: "word2", simalirity: 1}, {source: "word1", target: "word3", simalirity: 1}]});
   const [graphdata, setGraphdata] = useState({nodes: [], links: []})
   const [graphRes,  setGraphRes] = useState([]);
   const [words, setWords] = useState([]);
+  const [clearBubble, setClearBubble] = useState(false);
+  const [clearGraph, setClearGraph] = useState(false)
   
   const [loading, setLoading] = useState(true);
   const [slider_val, setSliderVal] = useState([0.5])
   const [ntrk_slider_val, setNtrkSliderVal] = useState([0.5])
   const [open, setOpen] = useState(false);
 
+  const [openModal, setOpenModal] = React.useState(false);
+  const handleOpenModal = () => setOpenModal(true);
+  const handleCloseModal = () => setOpenModal(false);
+
   const classes = useStyles();
 
+
+  function isEmpty(obj) {
+    for(var prop in obj) {
+      if(Object.prototype.hasOwnProperty.call(obj, prop)) {
+        return false;
+      }
+    }
+  
+    return JSON.stringify(obj) === JSON.stringify({});
+  }
 
   const allTweetData = async (handle_id) => {
     console.log("Started API call for Handle: ")
@@ -129,15 +152,43 @@ function App() {
     // var url = "https://catfact.ninja/fact";
     axios.get(url)
     .then( response => {
-      console.log(response)
-      changeData(response);
-      // changeGraphData(response);
       
+
+      if(response.status === 200)
+        {
+          console.log("api response:")
+          console.log(response)
+          if (!isEmpty(response.data)) {
+            changeData(response);
+            handleClose();
+            
+            // setAlertContent("Success");
+            // setAlert(true);
+          }
+          else {
+            // setAlertContent("The handle has no tweet data for past 7 days!");
+            // setAlert(true);
+            console.log("The handle has no tweet data for past 7 days!");
+            setErrorText(inputhandle+" has no tweet data for past 7 days! Please try some other handle.");
+            handleOpenModal();
+            handleClose();
+
+          }   
+        }
+      else
+        {
+          // setAlertContent("Error! Twitter handle not found!");
+          // setAlert(true);
+          console.log("Error! Twitter handle not found!");
+          setErrorText("Error! Twitter handle not found!")
+          handleOpenModal();
+          handleClose();
+        }
+    
     })
     .catch(err => {
       console.log(err);
     })
-
     
   }
 
@@ -157,6 +208,13 @@ function App() {
   const handleToggle = () => {
     setOpen(!open);
   };
+
+  // const handleClearGraph = () => {
+  //   setOpen(false);
+  // };
+  // const handleClearBubble = () => {
+  //   setOpen(!open);
+  // };
 
   useEffect(() => {
     // all these functions get called every single time the app gets rendered
@@ -223,26 +281,39 @@ function App() {
     })
 
     setData(data_twt);
-    setGraphRes(res.data.word_similarities);
+    
   
-    // setWords(words);
-    // setGraphdata(graphdata);
-    // changeWords();
+
     setLoading(false);
     handleClose();
+    
+    var words_ = generateWordFrequencies(data_twt, slider_val)
+      
+    words_.forEach(function(r) {
+      r.frequency = +r.frequency;
+      r.class = +r.class;
+    });
 
-    // var fs = require('fs');
-    // var tweet_text = []
-    // var tweet_scores = []
-    // data_twt.forEach((d) => {
-    //   tweet_text.push(d.text);
-    //   tweet_scores.push(d.score)
-    // }); // Generate this
-    // var fileName = 'raw_tweets.txt'; 
-    // console.log("!@#$%^")
-    // console.log(tweet_text);
-    // console.log(tweet_scores);
-    // fs.writeFileSync(fileName, tweet_text.join('\n'));
+    setWords(words_);
+
+    setClearBubble(!clearBubble);
+
+
+    
+    var graphRes_ = res.data.word_similarities;
+    setGraphRes(graphRes_);
+
+    var linksdata = generateGraphLinks(graphRes_);
+    var nodesdata = generateGraphNodes(graphRes_);
+ 
+
+    var graph_data;
+    graph_data = {nodes: nodesdata, links: linksdata}
+    setNtrkSliderVal(0.5);
+    setGraphdata(graph_data);
+    setClearGraph(!clearGraph);
+    
+
     
     return () => undefined;
   }
@@ -262,14 +333,14 @@ function App() {
 
   const changeWords = () => {
     
-    var words = generateWordFrequencies(data, slider_val)
+    var words_ = generateWordFrequencies(data, slider_val)
       
-    words.forEach(function(r) {
+    words_.forEach(function(r) {
       r.frequency = +r.frequency;
       r.class = +r.class;
     });
 
-    setWords(words);
+    setWords(words_);
     setLoading(false);
     return () => undefined;
   }
@@ -391,13 +462,7 @@ function App() {
         }
     }; 
   
-    var array = [{ name: "tom", text: "tasty" }];
-    var element = { name: "tom", text: "tasty" };
 
-
-    // array.pushIfNotExist(element, function(e) { 
-    //     return e.source === element.source && e. === element.text; 
-    // });
 
     var nodesdata = [];
 
@@ -442,6 +507,18 @@ function App() {
     // UpdateNtrkSliderVal(ntrk_slider_val)
     return () => undefined;
   }
+
+  const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+  };
 
 
   return (
@@ -505,31 +582,6 @@ function App() {
             />
 
 
-
-
-
-
-            {/* <Autocomplete
-            id="combo-box-handles"
-            classes = {classes}
-            options={topHandles}
-            disableClearable
-            renderInput={(params) => (
-              <TextField {...params} label="Twitter Handle" variant="standard"/>
-            )}
-            value={handle}
-            onChange={(event, value) => setHandle(value)}
-            inputValue={inputhandle}
-            onInputChange={(event, newInputValue) => {setInputHandle(newInputValue)}}
-          /> */}
-                {/* <Autocomplete
-            id="combo-box-demo"
-            classes={classes}
-            options={top10Handles}
-            
-            style={{ width: 170}}
-            
-          /> */}
         </div>
         <div id = "an_right" ><Button style={{ background: 'rgb(2 16 28)' }} variant="contained" onClick={analyze}> ANALYZE TWEETS</Button></div>
         <Backdrop
@@ -539,6 +591,41 @@ function App() {
           <CircularProgress color="inherit" />
           <Typography variant="body2"> Please wait! Fetching & Analyzing past 7 days tweets for {inputhandle}.</Typography>
         </Backdrop>
+
+        <Modal
+        open={openModal}
+        onClose={handleCloseModal}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+        >
+          <Box sx={style}>
+            <Typography id="modal-modal-title" variant="h6" component="h2">
+              Error!
+            </Typography>
+            <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+              {error_text}
+            </Typography>
+          </Box>
+        </Modal>
+
+        {/* <div>
+        {alert ? <Alert severity='error'>{alertContent}</Alert> : <></> }
+        <Modal
+        open={open_m}
+        onClose={handleCloseM}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+        >
+          <Box sx={style}>
+            <Typography id="modal-modal-title" variant="h6" component="h2">
+              Text in a modal
+            </Typography>
+            <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+              Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
+            </Typography>
+          </Box>
+        </Modal>
+        </div> */}
         
       </div>
       
@@ -645,7 +732,7 @@ function App() {
                     
                   </div>
                 </Box>
-                <Bubblechart  width={500} height={400} words={words} trshld={0.5}/>
+                <Bubblechart  width={500} height={400} words={words} trshld={0.5} clearflag = {clearBubble}/>
                 
               </div>
               <div id = "bot_right">
@@ -678,7 +765,7 @@ function App() {
                     </RadioGroup>
                 </Box>
                 {/* <NetworkGraphChart width={600} height={400} graphdata={graphdata} /> */}
-                <WordNetwork2 width={650} height={400} graphdata={graphdata} thresh={ntrk_slider_val}/>
+                <WordNetwork2 width={650} height={400} graphdata={graphdata} thresh={ntrk_slider_val} clearflag = {clearGraph}/>
                 {/* <NetworkGraphChart2 width={800} height={400} graphdata={graphdata} /> */}
               </div>
           </div>

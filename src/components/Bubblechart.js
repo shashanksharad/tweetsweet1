@@ -1,7 +1,7 @@
 import * as d3 from 'd3';
 import React, { useRef, useEffect } from 'react';
 
-function Bubblechart({ width, height, words}){
+function Bubblechart({ width, height, words, clearflag}){
     const ref = useRef();
     
     // console.log(data);
@@ -16,7 +16,7 @@ function Bubblechart({ width, height, words}){
 
     useEffect(() => {
         draw();
-    }, [words]);
+    }, [words, clearflag]);
 
     const draw = () => {
         var svg = d3.select(ref.current);

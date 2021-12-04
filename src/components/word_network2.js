@@ -3,7 +3,7 @@ import React, { useRef, useEffect } from 'react';
 
 const louvain = require('louvain-algorithm');
 
-function WordNetwork2({ width, height, graphdata, thresh}){
+function WordNetwork2({ width, height, graphdata, thresh, clearflag}){
     const ref = useRef();
     
 
@@ -17,7 +17,7 @@ function WordNetwork2({ width, height, graphdata, thresh}){
 
     useEffect(() => {
         draw();
-    }, [graphdata, thresh]);
+    }, [graphdata, thresh, clearflag]);
 
     
 
