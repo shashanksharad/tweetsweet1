@@ -83,6 +83,7 @@ var i = 0;
 function App() {
 
   const topHandles = [
+    { label: '@DAMAGEDTROOP410'}, 
     { label: '@bigguccicraigy'},
     // { label: '@arvindkejriwal'},
     { label: '@elonmusk'}, 
@@ -91,7 +92,6 @@ function App() {
     { label: '@Cristiano'},
     { label: '@taylorswift13'},
     { label: '@arianagrande'},
-    // { label: '@DAMAGEDTROOP410'}, 
     { label: '@KatanaKV'},
     { label: '@noname'},
     { label: '@sza'},
