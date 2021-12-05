@@ -169,7 +169,7 @@ function App() {
             // setAlertContent("The handle has no tweet data for past 7 days!");
             // setAlert(true);
             console.log("The handle has no tweet data for past 7 days!");
-            setErrorText(inputhandle+" has no tweet data for past 7 days! Please try some other handle.");
+            setErrorText(inputhandle+" has no tweet data for past 7 days or it doesn't exist! Please try some other handle.");
             handleOpenModal();
             handleClose();
 
