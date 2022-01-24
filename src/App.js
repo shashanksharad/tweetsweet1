@@ -14,7 +14,7 @@ import Grid from '@mui/material/Grid';
 import InputAdornment from '@mui/material/InputAdornment';
 import * as d3 from "d3";
 
-// import { rgb } from 'd3-color';
+import { rgb } from 'd3-color';
 import { color, margin } from '@mui/system';
 import LineChart from './components/Linechart';
 
@@ -146,13 +146,11 @@ function App() {
     // var url = "http://localhost:8000/api/v1/handle-analytics?handle="+handle_id.toString().toLowerCase();
 
     // For Accessing API withour Redirects
-    // var url = "http://35.245.119.65:8000/api/v1/handle-analytics?handle="+handle_id.toString().toLowerCase();
+//     var url = "http://35.245.119.65:8000/api/v1/handle-analytics?handle="+handle_id.toString().toLowerCase();
 
     // For Redirected API access on Netifly
     var url = "/api/api/v1/handle-analytics?handle="+handle_id.toString().toLowerCase();
     // var url = "https://catfact.ninja/fact";
-
-
     axios.get(url)
     .then( response => {
       
@@ -195,130 +193,22 @@ function App() {
     
   }
 
-
-  // var Twitter = require('twitter');
-  // require('dotenv/config');
-
-  // const apikey = process.env.apikey
-  // const apiSecretKey = process.env.apikeysecret
-  // const accessToken = process.env.accesstoken
-  // const accessTokenSecret = process.env.accesstokensecret
-
-  // console.log(apikey)
- 
-  // var client = new Twitter({
-  //   consumer_key: 'KDA32ejt12EzUD5XefIw9Ns1C',
-  //   consumer_secret: 'nez4ePqORQcoSApwmJ9iRmo4e9dSNJ9J5ruL0ZWKlPKP7lWd0N',
-  //   access_token_key: '158305963-E7FxEimf4e0KvcoVIG72joCMIvr0Oa2txUs9QJoh',
-  //   access_token_secret: 'sYWcQFLJWMmc9iLrI9hp1YCS2gW2bWdEGE9nU33sPepOV'
-  // });
-  
-  // var params = {screen_name: 'DAMAGEDTROOP410'};
-  // client.get('statuses/user_timeline', params, function(error, tweets, response) {
-  //   if (!error) {
-  //     console.log(tweets);
-  //   }
-  // });
-
-
-  // Get User Tweet timeline by user ID
-// https://developer.twitter.com/en/docs/twitter-api/tweets/timelines/quick-start
-
-// const needle = require('needle');
-
-// // this is the ID for @TwitterDev
-// const userId = "2244994945";
-// const url = `https://api.twitter.com/2/users/${userId}/tweets`;
-
-// // The code below sets the bearer token from your environment variables
-// // To set environment variables on macOS or Linux, run the export command below from the terminal:
-// // export BEARER_TOKEN='YOUR-TOKEN'
-// const bearerToken = process.env.REACT_APP_bearertoken;
-// console.log(bearerToken)
-// // const bearerToken = process.env.BEARER_TOKEN;
-
-// const getUserTweets = async () => {
-//     let userTweets = [];
-
-//     // we request the author_id expansion so that we can print out the user name later
-//     let params = {
-//         "max_results": 100,
-//         "tweet.fields": "created_at",
-//         "expansions": "author_id"
-//     }
-
-//     const options = {
-//         headers: {
-//             "User-Agent": "v2UserTweetsJS",
-//             "authorization": `Bearer ${bearerToken}`
-//         }
-//     }
-
-//     let hasNextPage = true;
-//     let nextToken = null;
-//     let userName;
-//     console.log("Retrieving Tweets...");
-
-//     while (hasNextPage) {
-//         let resp = await getPage(params, options, nextToken);
-//         if (resp && resp.meta && resp.meta.result_count && resp.meta.result_count > 0) {
-//             userName = resp.includes.users[0].username;
-//             if (resp.data) {
-//                 userTweets.push.apply(userTweets, resp.data);
-//             }
-//             if (resp.meta.next_token) {
-//                 nextToken = resp.meta.next_token;
-//             } else {
-//                 hasNextPage = false;
-//             }
-//         } else {
-//             hasNextPage = false;
-//         }
-//     }
-
-//     console.dir(userTweets, {
-//         depth: null
-//     });
-//     console.log(`Got ${userTweets.length} Tweets from ${userName} (user ID ${userId})!`);
-
-// }
-
-//     const getPage = async (params, options, nextToken) => {
-//         if (nextToken) {
-//             params.pagination_token = nextToken;
-//         }
-
-//         try {
-//             const resp = await needle('get', url, params, options);
-
-//             if (resp.statusCode != 200) {
-//                 console.log(`${resp.statusCode} ${resp.statusMessage}:\n${resp.body}`);
-//                 return;
-//             }
-//             return resp.body;
-//         } catch (err) {
-//             throw new Error(`Request failed: ${err}`);
-//         }
-//     }
-
-//     getUserTweets();
-
-//   const changeHandle = (value) => {
-//     console.log("selected handle")
-//     console.log(value)
-//     var handle_text = value.label.replace("@", '');
-//     setHandle("@"+handle_text);
-//     setInputHandle("@"+handle_text);
+  const changeHandle = (value) => {
+    console.log("selected handle")
+    console.log(value)
+    var handle_text = value.label.replace("@", '');
+    setHandle("@"+handle_text);
+    setInputHandle("@"+handle_text);
   
     
-//   }
+  }
 
-//   const handleClose = () => {
-//     setOpen(false);
-//   };
-//   const handleToggle = () => {
-//     setOpen(!open);
-//   };
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const handleToggle = () => {
+    setOpen(!open);
+  };
 
   // const handleClearGraph = () => {
   //   setOpen(false);
