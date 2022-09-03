@@ -84,18 +84,14 @@ function App() {
 
   const topHandles = [
     { label: '@DAMAGEDTROOP410'}, 
-    { label: '@bigguccicraigy'},
     { label: '@KatanaKV'},
-    { label: '@noname'},
-    { label: '@sza'},
-    { label: '@netw3rk'},
+    { label: '@BarackObama'},
+    { label: '@Drake'},
+    { label: '@TheEllenShow'},
     // { label: '@arvindkejriwal'},
     { label: '@elonmusk'}, 
     { label: '@justinbieber'}, 
-    { label: '@rihanna'}, 
     { label: '@Cristiano'},
-    { label: '@taylorswift13'},
-    { label: '@arianagrande'}
     
   ];
 
